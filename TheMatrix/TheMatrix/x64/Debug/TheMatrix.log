@@ -1,0 +1,4 @@
+﻿  TheMatrix.cpp
+C:\Users\Ирина\source\repos\TheMatrix\TheMatrix.cpp(184,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+C:\Users\Ирина\source\repos\TheMatrix\TheMatrix.cpp(186,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  TheMatrix.vcxproj -> C:\Users\Ирина\source\repos\TheMatrix\x64\Debug\TheMatrix.exe
