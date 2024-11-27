@@ -5,8 +5,95 @@
 #include <cstdlib>
 #include <stdlib.h>
 using namespace std;
-//const int N = 6;
+void qs(int* left, int* right)
+{
+    int* i, * j;
+    int x, y;
+    i = left; j = right;
+    x = *(left + (right - left));
 
+    do
+    {
+        while ((*i < x) && (i < right))i++;
+        while ((x < *j) && (j > left))j--;
+        if (i <= j)
+        {
+            y = *i;
+            *i = *j;
+            *j = y;
+            i++; j--;
+        }
+    } while (i <= j);
+
+    if (left < j)qs(left, j);
+    if (i < right)qs(i, right);
+}
+void printMatrix(int *matrix, int N, int coord) {
+    HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD destCoord;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            destCoord.X = j * 4 + 50;
+            destCoord.Y = i + coord;
+            SetConsoleCursorPosition(hStdout, destCoord);
+            cout << *(matrix + i + j) << " ";
+        }
+    }
+    cout << endl;
+}
+/*void minusMatrix() {
+    const int n = 10;
+    int N = matrixSize();
+    int matrix[n][n], matrix2[n][n], matrixDif[n][n];
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            *(*(matrix + i) + j) = rand() % (N * N) + 1;
+            *(*(matrix2 + i) + j) = rand() % (N * N) + 1;
+        }
+    }*/
+    /*cout << "Первая матрица: " << endl;
+    printMatrix(*matrix, N, 0);
+    cout << "Вторая матрица: " << endl;
+    printMatrix(*matrix2, N, N + 1);
+    cout << endl;
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            *(*(matrixDif + i) + j) = *(*(matrix + i) + j) + *(*(matrix2 + i) + j);
+            printMatrix(*matrixDif, N, N + 12);
+            Sleep(100);
+        }
+    }
+    printMatrix(*matrixDif, N, N + 12);
+    
+}*/
+void swap_quarters_a(int matrix[10][10], int N) {
+    int temp[10][10];
+    int middle = N / 2;
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            temp[i][j] = *(*(matrix + i) + j);
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i < middle && j < middle) {
+                *(*(matrix + i) + j + middle) = *(*(temp + i) + j);
+            }
+            else if (i < middle && j >= middle) {
+                *(*(matrix + i + middle) + j) = *(*(temp + i) + j);
+            }
+            else if (i >= middle && j >= middle) {
+                *(*(matrix + i) + j - middle) = *(*(temp + i) + j);
+            }
+            else {
+                *(*(matrix + i - middle) + j) = *(*(temp + i) + j);
+            }
+        }
+    }
+    //printMatrix(matrix, N, N + 10);
+}
 void combSort(int* arr, int N) {
     float k = 1.247;
     int s = N;
@@ -29,7 +116,7 @@ void combSort(int* arr, int N) {
     }
 }
 void insertSort(int* arr, int N) {
-    for (int i = 1; i < N; i++) {
+    for (int i = 1; i < N*N; i++) {
         int key = *(arr + i);
         int j = i - 1;
         while (j >= 0 && *(arr + j) > key) {
@@ -38,25 +125,6 @@ void insertSort(int* arr, int N) {
         }
         *(arr + j + 1) = key;
     }
-}
-void quickSort(int* matrix, int n, int* end, int* begin) {
-    int mid;
-    int* f = begin;
-    int* l = end;
-    mid = *(f + (l - matrix) - ((f - matrix) + (l - matrix)) / 2);
-    while (f < l) {
-        while (*f < mid) f++;
-        while (*l > mid) l--;
-        if (f <= l) {
-            int temp = *f;
-            *f = *l;
-            *l = temp;
-            f++;
-            l--;
-        }
-    }
-    if (begin < l) { quickSort(matrix, n, l, begin); }
-    if (f < end) { quickSort(matrix, n, end, f); }
 }
 void shakerSort(int* arr, int N) {
     int* begin = arr;
@@ -150,7 +218,7 @@ void fillMatrixSpiral(int *arr, int N) {
     int top = 0, left = 0, bottom = N - 1, right = N - 1;
     while (top <= bottom and left <= right) {
         for (int i = left; i <= right; ++i) {
-            int* element = arr + top + i;
+            int *element = arr + top + i;
             *element = rand() % (N * N) + 1;
             destCoord.X = i * 10;
             destCoord.Y = top * 4;
@@ -245,7 +313,6 @@ void swapBlocks(int *arr, int N) {
     cin >> typeswap;
     switch (typeswap) {
     case 1: {
-        printArr(arr, N);
         /*for (int i = 0; i < (N / 2); i++) {
             for (int g = 0; g < (N / 2); g++) {
                 swap(*(arr + i*N + g), *(arr+ i*N + g + N/2));
@@ -254,17 +321,17 @@ void swapBlocks(int *arr, int N) {
                 swap(arr[i][g], arr[n / 2 + i][g]);
             }
         }*/
-        printArr(arr, N);
         break;
     }
 
     case 2: {
-        /*for (int i = 0; i < (n / 2); i++) {
-            for (int g = 0; g < (n / 2); g++) {
-                swap(arra[i][g], arra[i + n / 2][g + n / 2]);
-                swap(arra[i][g + n / 2], arra[i + n / 2][g]);
+        for (int i = 0; i < (N / 2); i++) {
+            for (int j = 0; j < (N / 2); j++) {
+                //swap( *( *(arr + i + N/2) + j + N/2) , (*(arr + i) + j) );
+                //swap(arra[i][g], arra[i + n / 2][g + n / 2]);
+                //swap(arra[i][g + n / 2], arra[i + n / 2][g]);
             }
-        }*/
+        }
         break;
     }
     case 3: {
@@ -300,6 +367,29 @@ int checkInput(int floor = (numeric_limits<int>::min)(), int ceiling = (numeric_
     }
     return num;
 }
+int matrixSize() {
+    int size;
+    cout << "Выберите размерность массива(6, 8, 10): ";
+    cin >> size;
+    switch (size) {
+    case 6:
+        return 6;
+        cout << "Выбран размер 6 на 6" << endl;
+        break;
+    case 8:
+        return 8;
+        cout << "Выбран размер 8 на 8" << endl;
+        break;
+    case 10:
+        return 10;
+        cout << "Выбран размер 10 на 10" << endl;
+        break;
+    default:
+        cout << "Неверный выбор размера массива, по умолчанию массив будет 6 на 6" << endl;
+        return 6;
+        break;
+    }
+}
 void main() {
     setlocale(0, "");
     srand(time(NULL));    
@@ -311,30 +401,11 @@ void main() {
     cin.sync();  
     do {
         mainMenu();
-        choice = checkInput(1, 6);
+        choice = checkInput(1, 6);    
         switch (choice) {
         case 1: {
             system("cls");
-            int size;
-            cout << "Выберите размерность массива(6, 8, 10): ";
-            cin >> size;    
-            switch (size) {
-            case 6:
-                N = 6;
-                cout << "Выбран размер 6 на 6" << endl;
-                break;
-            case 8:
-                N = 8;
-                cout << "Выбран размер 8 на 8" << endl;
-                break;
-            case 10:
-                N = 10;
-                cout << "Выбран размер 10 на 10" << endl;
-                break;
-            default:
-                cout << "Неверный выбор размера массива, по умолчанию массив будет 6 на 6" << endl;
-                break;
-            }
+            N = matrixSize();
             break;
         }
         case 2: {
@@ -407,7 +478,7 @@ void main() {
                     cout << "Без сортировки: " << endl;
                     printArr(*arr, N);
                     cout << "\nС сортировкой: " << endl;
-                    quickSort(*arr, N, *(arr + N * N - 1), *arr);
+                    qs(*arr, *arr + N*N - 1);
                     printArr(*arr, N);
                     break;
                 }
